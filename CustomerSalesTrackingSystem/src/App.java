@@ -1,11 +1,12 @@
 import core.Database;
+import core.Helper;
+import view.LoginUI;
 
 import java.sql.Connection;
 
 public class App {
     public static void main(String[] args) {
-
-        Connection connection1= Database.getInstance();
-        Connection connection2= Database.getInstance();
+        Helper.setTheme();
+        LoginUI loginUI = new LoginUI();
     }
 }
