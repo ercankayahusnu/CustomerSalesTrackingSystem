@@ -52,23 +52,33 @@ public class Helper {
         String msg;
         String title = switch (message) {
             case "fill" -> {
-                msg = "Lütfen tüm alanları doldurunuz";
-                yield "Hata!";
+                msg = "Please fill in all fields";
+                yield "Eror!";
             }
             case "done" -> {
-                msg = "İşlem Başarılı";
-                yield "Sonuc";
+                msg = "Transaction successful";
+                yield "Solution";
             }
             case "error" -> {
-                msg = "Bir hata oluştu";
-                yield "Hata!";
+                msg = "Something went wrong";
+                yield "Eror!";
             }
             default -> {
                 msg = message;
-                yield "Mesaj";
+                yield "Message";
             }
         };
 
         JOptionPane.showMessageDialog(null, msg, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static boolean confirm(String str) {
+        String msg;
+        if (str.equals("sure")) {
+            msg = "Do you want to perform the deletion ?";
+        } else {
+            msg = str;
+        }
+        return JOptionPane.showConfirmDialog(null, msg, "Delete", JOptionPane.YES_NO_OPTION) == 0;
     }
 }

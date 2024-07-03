@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import business.CostomerController;
+import business.CustomerController;
 import core.Helper;
 import entity.Customer;
 import entity.User;
@@ -29,13 +29,13 @@ public class DashboardUI extends JFrame {
     private JLabel lbl_f_customer_name;
     private JLabel lbl_f_customer_type;
     private User user;
-    private CostomerController costomerController;
+    private CustomerController customerController;
     private DefaultTableModel tmdl_customer = new DefaultTableModel();
     private JPopupMenu popup_customer = new JPopupMenu();
 
     public DashboardUI(User user) {
         this.user = user;
-        this.costomerController = new CostomerController();
+        this.customerController = new CustomerController();
 
         if (user == null) {
             Helper.showMessage("error");
@@ -61,7 +61,21 @@ public class DashboardUI extends JFrame {
 
         loadCustomerTable(null);
         loadCustomerPopupMenu();
+        loadCustomerButtonEvent();
 
+
+    }
+
+    private void loadCustomerButtonEvent() {
+        btn_customer_new.addActionListener(e -> {
+            CustomerUI customerUI = new CustomerUI(new Customer());
+            customerUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadCustomerTable(null);
+                }
+            });
+        });
     }
 
     private void loadCustomerPopupMenu() {
@@ -79,21 +93,34 @@ public class DashboardUI extends JFrame {
         });
         this.popup_customer.add("Update").addActionListener(e -> {
             int selectId = Integer.parseInt(tbl_customer.getValueAt(tbl_customer.getSelectedRow(), 0).toString());
-            System.out.println(selectId);
+            CustomerUI customerUI = new CustomerUI(this.customerController.getById(selectId));
+            customerUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadCustomerTable(null);
+                }
+            });
         });
         this.popup_customer.add("Delete").addActionListener(e -> {
+            int selectId = Integer.parseInt(tbl_customer.getValueAt(tbl_customer.getSelectedRow(), 0).toString());
+            if (Helper.confirm("sure")) {
+                if (this.customerController.delete(selectId)) {
+                    Helper.showMessage("done");
+                    loadCustomerTable(null);
+                } else {
+                    Helper.showMessage("error");
+                }
+            }
 
         });
-
-
     }
 
     private void loadCustomerTable(ArrayList<Customer> customers) {
         Object[] columnCustomer = {"ID", "Name", "Type", "Phone", "E-posta", "Address"};
         if (customers == null) {
-            customers = this.costomerController.findAll();
+            customers = this.customerController.findAll();
         }
-        //tablo sıfırlama
+
         DefaultTableModel clearModel = (DefaultTableModel) tbl_customer.getModel();
         clearModel.setRowCount(0);
 
