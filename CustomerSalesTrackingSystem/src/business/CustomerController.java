@@ -37,4 +37,20 @@ public class CustomerController {
         }
         return this.customerDAO.delete(id);
     }
+
+    public ArrayList<Customer> fiter(String name, Customer.TYPE type) {
+        String query = "SELECT * FROM customer";
+        ArrayList<String> whereList = new ArrayList<>();
+        if (name.length() > 0) {
+            whereList.add("name LIKE '%" + name + "%'");
+        }
+        if (type != null) {
+            whereList.add("type LIKE '%" + type + "%'");
+        }
+        if (whereList.size() > 0) {
+            String whereQuery = String.join(" AND ", whereList);
+            query += " WHERE " + whereQuery;
+        }
+        return this.customerDAO.query(query);
+    }
 }
