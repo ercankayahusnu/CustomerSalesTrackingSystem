@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import business.CustomerController;
 import business.ProductController;
 import core.Helper;
+import core.Item;
 import entity.Customer;
 import entity.Product;
 import entity.User;
@@ -35,7 +36,7 @@ public class DashboardUI extends JFrame {
     private JTable tbl_product;
     private JPanel pnl_product_filter;
     private JTextField fld_product_filter_code;
-    private JComboBox cmb_product_filter_stock;
+    private JComboBox<Item> cmb_product_filter_stock;
     private JButton btn_produck_filter_search;
     private JButton btn_product_filter_reset;
     private JButton btn_produck_filter_add;
@@ -88,7 +89,9 @@ public class DashboardUI extends JFrame {
         loadProductTable(null);
         loadProductPopupMenu();
         loadProductButtonEvent();
-
+        this.cmb_product_filter_stock.addItem(new Item(1, "in stock"));
+        this.cmb_product_filter_stock.addItem(new Item(2, "Out of stock"));
+        this.cmb_product_filter_stock.setSelectedItem(null);
 
     }
 
@@ -194,6 +197,21 @@ public class DashboardUI extends JFrame {
                 }
             });
         });
+        this.btn_produck_filter_search.addActionListener(e -> {
+            ArrayList<Product> filteredProducts = this.productController.filter(
+                    this.fld_filter_product_name.getText(),
+                    this.fld_product_filter_code.getText(),
+                    (Item) this.cmb_product_filter_stock.getSelectedItem()
+            );
+            loadProductTable(filteredProducts);
+
+        });
+        btn_product_filter_reset.addActionListener(e -> {
+            this.fld_filter_product_name.setText(null);
+            this.fld_product_filter_code.setText(null);
+            this.cmb_product_filter_stock.setSelectedItem(null);
+            loadProductTable(null);
+        });
     }
 
     private void loadProductPopupMenu() {
@@ -235,7 +253,7 @@ public class DashboardUI extends JFrame {
     }
 
     private void loadProductTable(ArrayList<Product> products) {
-        Object[] columnProducts = {"ID", "Product Name", "Product Code", "Price"};
+        Object[] columnProducts = {"ID", "Product Name", "Product Code", "Price", "Stock"};
         if (products == null) {
             products = this.productController.findAll();
         }

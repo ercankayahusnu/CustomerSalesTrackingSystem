@@ -1,6 +1,7 @@
 package dao;
 
 import core.Database;
+import core.Item;
 import entity.Customer;
 import entity.Product;
 
@@ -83,6 +84,7 @@ public class ProductDAO {
         }
         return true;
     }
+
     public boolean delete(int id) {
         String query = "DELETE FROM product WHERE id = ?";
         try {
@@ -110,6 +112,20 @@ public class ProductDAO {
 
         } catch (SQLException exception) {
             exception.printStackTrace();
+        }
+        return product;
+    }
+
+    public ArrayList<Product> query(String query) {
+        ArrayList<Product> product = new ArrayList<>();
+        try {
+            ResultSet rs = this.connection.createStatement().executeQuery(query);
+            while (rs.next()) {
+                product.add(this.match(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return product;
     }
