@@ -43,12 +43,7 @@ public class Helper {
         return true;
     }
 
-//    public static void optionPaneDialogTR() {
-//        UIManager.put("OptionPane.okButtonText", "Tamam");
-//    }
-
     public static void showMessage(String message) {
-//        optionPaneDialogTR();
         String msg;
         String title = switch (message) {
             case "fill" -> {

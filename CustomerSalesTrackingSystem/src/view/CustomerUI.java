@@ -66,7 +66,7 @@ public class CustomerUI extends JFrame {
                 this.customer.setType((Customer.TYPE) this.cmb_customer_type.getSelectedItem());
                 if (this.customer.getId() == 0) {
                     result = this.customerController.save(this.customer);
-                }else{
+                } else {
                     result = this.customerController.update(this.customer);
                 }
                 if (result) {
