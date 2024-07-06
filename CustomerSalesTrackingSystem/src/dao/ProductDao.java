@@ -1,8 +1,6 @@
 package dao;
 
 import core.Database;
-import core.Item;
-import entity.Customer;
 import entity.Product;
 
 import java.sql.Connection;
@@ -11,10 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ProductDAO {
+public class ProductDao {
     private Connection connection;
 
-    public ProductDAO() {
+    public ProductDao() {
         this.connection = Database.getInstance();
     }
 

@@ -4,14 +4,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import business.BasketController;
+import business.CartController;
 import business.CustomerController;
 import business.ProductController;
 import core.Helper;
 import core.Item;
-import entity.Basket;
-import entity.Customer;
-import entity.Product;
-import entity.User;
+import entity.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -58,13 +56,17 @@ public class DashboardUI extends JFrame {
     private JLabel lbl_basket_numberProduct_tex;
     private JLabel lbl_basket_numberProducts;
     private JTable tbl_basket_table;
+    private JTable tbl_cart_orders_table;
+    private JScrollPane scrl_orders;
     private User user;
     private CustomerController customerController;
     private ProductController productController;
     private BasketController basketController;
+    private CartController cartController;
     private DefaultTableModel tmdl_customer = new DefaultTableModel();
     private DefaultTableModel tmdl_product = new DefaultTableModel();
     private DefaultTableModel tmdl_basket = new DefaultTableModel();
+    private DefaultTableModel tmdl_cart = new DefaultTableModel();
     private JPopupMenu popup_customer = new JPopupMenu();
     private JPopupMenu popup_product = new JPopupMenu();
 
@@ -74,6 +76,7 @@ public class DashboardUI extends JFrame {
         this.customerController = new CustomerController();
         this.productController = new ProductController();
         this.basketController = new BasketController();
+        this.cartController = new CartController();
 
         if (user == null) {
             Helper.showMessage("error");
@@ -113,6 +116,9 @@ public class DashboardUI extends JFrame {
         loadBasketTable();
         loadBasketButtonEvent();
         loadBasketCustomerCombo();
+        //CART TAB
+        loadCartTable();
+
     }
 
     //CUSTOMER
@@ -330,6 +336,30 @@ public class DashboardUI extends JFrame {
             }
         });
 
+        this.createOrderButton.addActionListener(e -> {
+            Item selectedCustomer = (Item) this.cmb_basket_customerSelect.getSelectedItem();
+            if (selectedCustomer == null) {
+                Helper.showMessage("Lütfen bir müşteri seçiniz !");
+            } else {
+                Customer customer = this.customerController.getById(selectedCustomer.getKey());
+                ArrayList<Basket> baskets = this.basketController.findAll();
+                if (customer.getId() == 0) {
+                    Helper.showMessage("Böyle bir müşteri bulunamadı");
+                } else if (baskets.size() == 0) {
+                    Helper.showMessage("Lütfen Sepete Ürün ekle");
+                } else {
+                    CartUI cartUI = new CartUI(customer);
+                    cartUI.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            super.windowClosed(e);
+                            loadBasketTable();
+                            loadProductTable(null);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void loadBasketTable() {
@@ -370,4 +400,35 @@ public class DashboardUI extends JFrame {
         }
         this.cmb_basket_customerSelect.setSelectedItem(null);
     }
+
+    //CART
+    private void loadCartTable() {
+        Object[] columnCart = {"ID", "Name", "Product Name", "Price", "Order Date", "Not"};
+        ArrayList<Cart> carts = this.cartController.findAll();
+
+        if (carts == null) {
+            carts = this.cartController.findAll();
+        }
+
+        DefaultTableModel clearModel = (DefaultTableModel) this.tbl_cart_orders_table.getModel();
+        clearModel.setRowCount(0);
+
+        this.tmdl_cart.setColumnIdentifiers(columnCart);
+        for (Cart cart : carts) {
+            Object[] rowObject = {
+                    cart.getId(),
+                    cart.getCustomer().getName(),
+                    cart.getProduct().getCode(),
+                    cart.getPrice(),
+                    cart.getDate(),
+                    cart.getNote()
+            };
+            this.tmdl_cart.addRow(rowObject);
+        }
+        this.tbl_cart_orders_table.setModel(this.tmdl_cart);
+        this.tbl_cart_orders_table.getTableHeader().setReorderingAllowed(false);
+        this.tbl_cart_orders_table.getColumnModel().getColumn(0).setMaxWidth(50);
+        this.tbl_cart_orders_table.setEnabled(false);
+    }
+
 }

@@ -2,8 +2,6 @@ package dao;
 
 import core.Database;
 import entity.Basket;
-import entity.Customer;
-import entity.Product;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,13 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BasketDAO {
+public class BasketDao {
     private Connection connection;
-    private ProductDAO productDAO;
+    private ProductDao productDAO;
 
-    public BasketDAO() {
+    public BasketDao() {
         this.connection = Database.getInstance();
-        this.productDAO = new ProductDAO();
+        this.productDAO = new ProductDao();
     }
 
     public boolean save(Basket basket) {

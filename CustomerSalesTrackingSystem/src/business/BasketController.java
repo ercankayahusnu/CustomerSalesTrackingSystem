@@ -1,12 +1,12 @@
 package business;
 
-import dao.BasketDAO;
+import dao.BasketDao;
 import entity.Basket;
 
 import java.util.ArrayList;
 
 public class BasketController {
-    private final BasketDAO basketDAO = new BasketDAO();
+    private final BasketDao basketDAO = new BasketDao();
 
     public boolean save(Basket basket) {
         return this.basketDAO.save(basket);

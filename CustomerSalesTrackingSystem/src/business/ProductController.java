@@ -2,14 +2,13 @@ package business;
 
 import core.Helper;
 import core.Item;
-import dao.ProductDAO;
-import entity.Customer;
+import dao.ProductDao;
 import entity.Product;
 
 import java.util.ArrayList;
 
 public class ProductController {
-    private final ProductDAO productDAO = new ProductDAO();
+    private final ProductDao productDAO = new ProductDao();
 
     public ArrayList<Product> findAll() {
         return this.productDAO.findAll();
